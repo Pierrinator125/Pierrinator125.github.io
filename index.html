@@ -34,6 +34,12 @@
 
         <h2>Exercice 3 : </h2>
 
+        <p id="alpha"></p>
+        <p id="beta"></p>
+        <p id="gamma"></p>
+        <p id="accelrota"></p>
+        <p id="acceltransla"></p>
+
     </body>
 
     <script src="dvd.js"></script>
@@ -53,9 +59,22 @@
         vit1 = document.getElementById("Vitesse1");
         date1 = document.getElementById("Date1");
 
+        alpha = document.getElementById("alpha");
+        beta = document.getElementById("beta");
+        gamma = document.getElementById("gamma");
+        accelrota = document.getElementById("accelrota")
+        acceltransla = document.getElementById("acceltransla")
+
         navigator.geolocation.getCurrentPosition(showPositionCurrent);
         navigator.geolocation.watchPosition(showPositionWatch);
 
+        window.addEventListener("devicemotion",(motion) => {
+            alpha.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.rotationRate.alpha
+            beta.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.rotationRate.beta
+            gamma.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.rotationRate.gamma
+            accelrota.innerHTML = "Vitesse de translation sur y : " + motion.acceleration.y
+            acceltransla.innerHTML = "Vitesse de translation sur x :" + motion.acceleration.x
+        });
 
         function showPositionCurrent(position){
             lat.innerHTML = "Latitude : " + position.coords.latitude
