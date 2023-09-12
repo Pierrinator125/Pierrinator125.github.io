@@ -1,1 +1,45 @@
-Hello World
+<html lang="FR">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>TD1 Cartographie</title>
+
+    <style src="style.css"></style>
+
+    <head id="dvd">
+        Bonjour tout le monde
+    </head>
+
+    <body>
+
+        <p id="Latitude"></p>
+        <p id="Longitude"></p>
+        <p id="Altitude"></p>
+        <p id="Précision"></p>
+        <p id="Vitesse"></p>
+        <p id="Date"></p>
+
+    </body>
+
+    <script>
+        lat = document.getElementById("Latitude");
+        long = document.getElementById("Longitude");
+        alt = document.getElementById("Altitude");
+        prec = document.getElementById("Précision");
+        vit = document.getElementById("Vitesse");
+        date = document.getElementById("Date");
+        
+        navigator.geolocation.getCurrentPosition(showPosition);
+
+        function showPosition(position){
+            lat.innerHTML = "Latitude : " + position.coords.latitude
+            long.innerHTML = "Longitude : " + position.coords.longitude
+            alt.innerHTML = "Altitude : " + position.coords.altitude
+
+        }
+
+
+    </script>
+
+</html>
+
