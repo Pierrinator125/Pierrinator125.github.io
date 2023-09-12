@@ -6,9 +6,11 @@
 
     <style src="style.css"></style>
 
-    <head id="dvd">
-        Bonjour tout le monde
+    <head>
+        <h1> TD1 Géolocalisation</h1>
     </head>
+
+    <div id="dvd"></div>
 
     <body>
 
@@ -21,6 +23,8 @@
 
     </body>
 
+    <script src="dvd.js"></script>
+
     <script>
         lat = document.getElementById("Latitude");
         long = document.getElementById("Longitude");
@@ -28,14 +32,16 @@
         prec = document.getElementById("Précision");
         vit = document.getElementById("Vitesse");
         date = document.getElementById("Date");
-        
+
         navigator.geolocation.getCurrentPosition(showPosition);
 
         function showPosition(position){
             lat.innerHTML = "Latitude : " + position.coords.latitude
             long.innerHTML = "Longitude : " + position.coords.longitude
             alt.innerHTML = "Altitude : " + position.coords.altitude
-
+            prec.innerHTML = "Précision : " + position.coords.accuracy
+            vit.innerHTML = "Vitesse : " + position.coords.speed
+            date.innerHTML = "Date : " + position.timestamp
         }
 
 
