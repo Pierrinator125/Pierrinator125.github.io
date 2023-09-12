@@ -33,12 +33,18 @@
         <p id="Date1"></p>
 
         <h2>Exercice 3 : </h2>
-
+        <h3>Avec deviceMotion : </h3>
         <p id="alpha"></p>
         <p id="beta"></p>
         <p id="gamma"></p>
         <p id="accelrota"></p>
         <p id="acceltransla"></p>
+
+        <h3>Avec deviceOrientation : </h3>
+        <p id="alphaor"></p>
+        <p id="betaor"></p>
+        <p id="gammaor"></p>
+        <p>Par contre il ne récupère pas la translation du téléphone sur les différents axes. </p>
 
     </body>
 
@@ -65,6 +71,10 @@
         accelrota = document.getElementById("accelrota")
         acceltransla = document.getElementById("acceltransla")
 
+        alphaor = document.getElementById("alphaor");
+        betaor = document.getElementById("betaor");
+        gammaor = document.getElementById("gammaor");
+
         navigator.geolocation.getCurrentPosition(showPositionCurrent);
         navigator.geolocation.watchPosition(showPositionWatch);
 
@@ -75,6 +85,13 @@
             accelrota.innerHTML = "Vitesse de translation sur y : " + motion.acceleration.y
             acceltransla.innerHTML = "Vitesse de translation sur x :" + motion.acceleration.x
         });
+
+        window.addEventListener("deviceorientation",(motion) => {
+            alphaor.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.alpha
+            betaor.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.beta
+            gammaor.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.gamma
+        });
+
 
         function showPositionCurrent(position){
             lat.innerHTML = "Latitude : " + position.coords.latitude
@@ -93,7 +110,6 @@
             vit1.innerHTML = "Vitesse Update : " + position.coords.speed
             date1.innerHTML = "Date Update : " + position.timestamp
         }
-
 
     </script>
 
