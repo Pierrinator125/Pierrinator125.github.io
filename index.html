@@ -14,12 +14,25 @@
 
     <body>
 
+        <h2>Exercice 2 : </h2>
+
+        <h3>Avec getCurrentPosition() : </h3>
         <p id="Latitude"></p>
         <p id="Longitude"></p>
         <p id="Altitude"></p>
         <p id="Précision"></p>
         <p id="Vitesse"></p>
         <p id="Date"></p>
+
+        <h3>Avec watchPosition() : </h3>
+        <p id="Latitude1"></p>
+        <p id="Longitude1"></p>
+        <p id="Altitude1"></p>
+        <p id="Précision1"></p>
+        <p id="Vitesse1"></p>
+        <p id="Date1"></p>
+
+        <h2>Exercice 3 : </h2>
 
     </body>
 
@@ -33,15 +46,33 @@
         vit = document.getElementById("Vitesse");
         date = document.getElementById("Date");
 
-        navigator.geolocation.getCurrentPosition(showPosition);
+        lat1 = document.getElementById("Latitude1");
+        long1 = document.getElementById("Longitude1");
+        alt1 = document.getElementById("Altitude1");
+        prec1 = document.getElementById("Précision1");
+        vit1 = document.getElementById("Vitesse1");
+        date1 = document.getElementById("Date1");
 
-        function showPosition(position){
+        navigator.geolocation.getCurrentPosition(showPositionCurrent);
+        navigator.geolocation.watchPosition(showPositionWatch);
+
+
+        function showPositionCurrent(position){
             lat.innerHTML = "Latitude : " + position.coords.latitude
             long.innerHTML = "Longitude : " + position.coords.longitude
             alt.innerHTML = "Altitude : " + position.coords.altitude
             prec.innerHTML = "Précision : " + position.coords.accuracy
             vit.innerHTML = "Vitesse : " + position.coords.speed
             date.innerHTML = "Date : " + position.timestamp
+        }
+
+        function showPositionWatch(position){
+            lat1.innerHTML = "Latitude Update : " + position.coords.latitude
+            long1.innerHTML = "Longitude Update : " + position.coords.longitude
+            alt1.innerHTML = "Altitude Update : " + position.coords.altitude
+            prec1.innerHTML = "Précision Update : " + position.coords.accuracy
+            vit1.innerHTML = "Vitesse Update : " + position.coords.speed
+            date1.innerHTML = "Date Update : " + position.timestamp
         }
 
 
