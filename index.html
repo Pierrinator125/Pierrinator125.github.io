@@ -46,6 +46,9 @@
         <p id="gammaor"></p>
         <p>Par contre il ne récupère pas la translation du téléphone sur les différents axes. </p>
 
+        <h2>Exercice 4 : </h2>
+        <canvas id="touchable" width="600" height="600"></canvas>
+
     </body>
 
     <script src="dvd.js"></script>
@@ -65,32 +68,8 @@
         vit1 = document.getElementById("Vitesse1");
         date1 = document.getElementById("Date1");
 
-        alpha = document.getElementById("alpha");
-        beta = document.getElementById("beta");
-        gamma = document.getElementById("gamma");
-        accelrota = document.getElementById("accelrota")
-        acceltransla = document.getElementById("acceltransla")
-
-        alphaor = document.getElementById("alphaor");
-        betaor = document.getElementById("betaor");
-        gammaor = document.getElementById("gammaor");
-
         navigator.geolocation.getCurrentPosition(showPositionCurrent);
         navigator.geolocation.watchPosition(showPositionWatch);
-
-        window.addEventListener("devicemotion",(motion) => {
-            alpha.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.rotationRate.alpha
-            beta.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.rotationRate.beta
-            gamma.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.rotationRate.gamma
-            accelrota.innerHTML = "Vitesse de translation sur y : " + motion.acceleration.y
-            acceltransla.innerHTML = "Vitesse de translation sur x :" + motion.acceleration.x
-        });
-
-        window.addEventListener("deviceorientation",(motion) => {
-            alphaor.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.alpha
-            betaor.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.beta
-            gammaor.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.gamma
-        });
 
 
         function showPositionCurrent(position){
@@ -111,6 +90,147 @@
             date1.innerHTML = "Date Update : " + position.timestamp
         }
 
+    </script>
+        
+    <script>
+
+        alpha = document.getElementById("alpha");
+        beta = document.getElementById("beta");
+        gamma = document.getElementById("gamma");
+        accelrota = document.getElementById("accelrota")
+        acceltransla = document.getElementById("acceltransla")
+
+        alphaor = document.getElementById("alphaor");
+        betaor = document.getElementById("betaor");
+        gammaor = document.getElementById("gammaor");
+
+        window.addEventListener("deviceorientation",(motion) => {
+            alphaor.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.alpha
+            betaor.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.beta
+            gammaor.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.gamma
+        });
+
+
+        window.addEventListener("devicemotion",(motion) => {
+            alpha.innerHTML = "Vitesse de rotation sur l'axe z : " + motion.rotationRate.alpha
+            beta.innerHTML = "Vitesse de rotation sur l'axe x : " + motion.rotationRate.beta
+            gamma.innerHTML = "Vitesse de rotation sur l'axe y : " + motion.rotationRate.gamma
+            accelrota.innerHTML = "Vitesse de translation sur y : " + motion.acceleration.y
+            acceltransla.innerHTML = "Vitesse de translation sur x :" + motion.acceleration.x
+        });
+
+    </script>
+
+    <script>
+
+        const ongoingTouches = [];
+
+        document.addEventListener("DOMContentLoaded", démarrage);
+
+        function démarrage() 
+        {
+            const el = document.getElementById("touchable");
+            el.addEventListener("touchstart", début);
+            el.addEventListener("touchend", fin);
+            el.addEventListener("touchcancel", annuler);
+            el.addEventListener("touchmove", déplacement);
+            console.log("Initialisé");
+        }
+
+        function début(event) 
+        {
+            event.preventDefault();
+            console.log("c'est le début de la forme")
+            const el = document.getElementById("touchable");
+            const ctx = el.getContext("2d");
+            const touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) 
+            {
+                console.log(`début de touché : ${i}.`);
+                ongoingTouches.push(copyTouch(touches[i]));
+                const color = colorForTouch(touches[i]);
+                console.log(`couleur du touché avec l'id ${touches[i].identifier} = ${color}`);
+                ctx.beginPath();
+                ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false); // a circle at the start
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+        }
+
+        function déplacement(event) 
+        {
+            event.preventDefault();
+            console.log("le touché continue et on se déplace")
+            const el = document.getElementById("touchable");
+            const ctx = el.getContext("2d");
+            const touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) 
+            {
+                const color = colorForTouch(touches[i]);
+                const idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if (idx >= 0) 
+                {
+                    console.log(`le touché continue ${idx}`);
+                    ctx.beginPath();
+                    console.log(`ctx.moveTo( ${ongoingTouches[idx].pageX}, ${ongoingTouches[idx].pageY} );`,);
+                    ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    console.log(`ctx.lineTo( ${touches[i].pageX}, ${touches[i].pageY} );`);
+                    ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = color;
+                    ctx.stroke();
+                    ongoingTouches.splice(idx, 1, copyTouch(touches[i])); // swap in the new touch record
+                } 
+                else 
+                {
+                    console.log("on ne sait pas avec quel touché il faut continuer");
+                }
+            }
+        }
+
+        function fin(event) 
+        {
+            event.preventDefault();
+            console.log("la fin approche...");
+            const el = document.getElementById("touchable");
+            const ctx = el.getContext("2d");
+            const touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) 
+            {
+                const color = colorForTouch(touches[i]);
+                let idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if (idx >= 0) 
+                {
+                    ctx.lineWidth = 4;
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                    ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8); // and a square at the end
+                    ongoingTouches.splice(idx, 1); // remove it; we're done
+                } 
+                else 
+                {
+                    console.log("On ne sait pas avec quel touché finir");
+                }
+            }
+        }
+
+        function annuler(event) {
+            event.preventDefault();
+            console.log("annulation du touché ");
+            const touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                let idx = ongoingTouchIndexById(touches[i].identifier);
+                ongoingTouches.splice(idx, 1); // remove it; we're done
+            }
+        }
     </script>
 
 </html>
