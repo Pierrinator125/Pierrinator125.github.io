@@ -185,6 +185,8 @@
                     log(`ctx.lineTo( ${touches[i].pageX}, ${touches[i].pageY} );`);
                     ctx.lineTo(touches[i].pageX, touches[i].pageY);
                     ctx.stroke();
+                    ctx.fillStyle = color;
+                    ctx.fill();
                     ongoingTouches.splice(idx, 1, copyTouch(touches[i])); // swap in the new touch record
                 } 
                 else 
@@ -216,6 +218,7 @@
                     ctx.lineTo(touches[i].pageX, touches[i].pageY);
                     ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8); // and a square at the end
                     ongoingTouches.splice(idx, 1); // remove it; we're done
+                    ctx.closePath()
                 } 
                 else 
                 {
