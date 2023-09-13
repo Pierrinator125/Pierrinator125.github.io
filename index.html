@@ -47,7 +47,9 @@
         <p>Par contre il ne récupère pas la translation du téléphone sur les différents axes. </p>
 
         <h2>Exercice 4 : </h2>
-        <canvas id="touchable" width="600" height="600"></canvas>
+        <canvas id="touchable" width="600" height="600" style="border:solid black 1px;"></canvas>
+
+        <pre id="log" style="border: 1px solid #ccc;"></pre>
 
     </body>
 
@@ -134,23 +136,23 @@
             el.addEventListener("touchend", fin);
             el.addEventListener("touchcancel", annuler);
             el.addEventListener("touchmove", déplacement);
-            console.log("Initialisé");
+            log("Initialisé");
         }
 
         function début(event) 
         {
             event.preventDefault();
-            console.log("c'est le début de la forme")
+            log("c'est le début de la forme")
             const el = document.getElementById("touchable");
             const ctx = el.getContext("2d");
             const touches = event.changedTouches;
 
             for (let i = 0; i < touches.length; i++) 
             {
-                console.log(`début de touché : ${i}.`);
+                log(`début de touché : ${i}.`);
                 ongoingTouches.push(copyTouch(touches[i]));
                 const color = colorForTouch(touches[i]);
-                console.log(`couleur du touché avec l'id ${touches[i].identifier} = ${color}`);
+                log(`couleur du touché avec l'id ${touches[i].identifier} = ${color}`);
                 ctx.beginPath();
                 ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false); // a circle at the start
                 ctx.fillStyle = color;
@@ -161,7 +163,7 @@
         function déplacement(event) 
         {
             event.preventDefault();
-            console.log("le touché continue et on se déplace")
+            log("le touché continue et on se déplace")
             const el = document.getElementById("touchable");
             const ctx = el.getContext("2d");
             const touches = event.changedTouches;
@@ -173,11 +175,11 @@
 
                 if (idx >= 0) 
                 {
-                    console.log(`le touché continue ${idx}`);
+                    log(`le touché continue ${idx}`);
                     ctx.beginPath();
-                    console.log(`ctx.moveTo( ${ongoingTouches[idx].pageX}, ${ongoingTouches[idx].pageY} );`,);
+                    log(`ctx.moveTo( ${ongoingTouches[idx].pageX}, ${ongoingTouches[idx].pageY} );`,);
                     ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
-                    console.log(`ctx.lineTo( ${touches[i].pageX}, ${touches[i].pageY} );`);
+                    log(`ctx.lineTo( ${touches[i].pageX}, ${touches[i].pageY} );`);
                     ctx.lineTo(touches[i].pageX, touches[i].pageY);
                     ctx.lineWidth = 4;
                     ctx.strokeStyle = color;
@@ -186,7 +188,7 @@
                 } 
                 else 
                 {
-                    console.log("on ne sait pas avec quel touché il faut continuer");
+                    log("on ne sait pas avec quel touché il faut continuer");
                 }
             }
         }
@@ -194,7 +196,7 @@
         function fin(event) 
         {
             event.preventDefault();
-            console.log("la fin approche...");
+            log("la fin approche...");
             const el = document.getElementById("touchable");
             const ctx = el.getContext("2d");
             const touches = event.changedTouches;
@@ -216,14 +218,14 @@
                 } 
                 else 
                 {
-                    console.log("On ne sait pas avec quel touché finir");
+                    log("On ne sait pas avec quel touché finir");
                 }
             }
         }
 
         function annuler(event) {
             event.preventDefault();
-            console.log("annulation du touché ");
+            log("annulation du touché ");
             const touches = event.changedTouches;
 
             for (let i = 0; i < touches.length; i++) {
@@ -231,6 +233,42 @@
                 ongoingTouches.splice(idx, 1); // remove it; we're done
             }
         }
+
+        function colorForTouch(touch) 
+        {
+            let r = touch.identifier % 16;
+            let g = Math.floor(touch.identifier / 3) % 16;
+            let b = Math.floor(touch.identifier / 7) % 16;
+            r = r.toString(16); // make it a hex digit
+            g = g.toString(16); // make it a hex digit
+            b = b.toString(16); // make it a hex digit
+            const color = `#${r}${g}${b}`;
+            return color;
+        }
+
+        function copyTouch({ identifier, pageX, pageY }) 
+        {
+            return { identifier, pageX, pageY };
+        }
+
+        function ongoingTouchIndexById(idToFind) {
+            for (let i = 0; i < ongoingTouches.length; i++) {
+                const id = ongoingTouches[i].identifier;
+
+                if (id === idToFind) 
+                {
+                    return i;
+                }
+            }
+            return -1; // not found
+        }
+
+        function log(msg) 
+        {
+            const container = document.getElementById("log");
+            container.innerHTML = `${msg} \n${container.textContent}`;
+        }
+
     </script>
 
 </html>
