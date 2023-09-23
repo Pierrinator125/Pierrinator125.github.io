@@ -122,9 +122,11 @@
         </script>
 
         <script>
-            var reader = new FileReader();
-            var geojsonFeature = reader.readAsText("routes-metropolitaines.geojson")
-            L.geoJSON(geojsonFeature).addTo(map);
+            fetch('https://pierrinator125.github.io/routes-metropolitaines.geojson')
+                .then((response) => response.json())
+                .then((json) => {
+                L.geoJSON(json).addTo(map);
+            });
         </script>
 
 
