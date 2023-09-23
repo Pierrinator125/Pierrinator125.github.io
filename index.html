@@ -8,6 +8,15 @@
 
     <head>
         <h1> TD1 Géolocalisation</h1>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin="">
+        </script>
+        <link rel="stylesheet" href="style.css">
+
     </head>
 
     <div id="dvd"></div>
@@ -50,6 +59,74 @@
         <canvas id="touchable" width="600" height="600" style="border:solid black 1px;"></canvas>
 
         <pre id="log" style="border: 1px solid #ccc;"></pre>
+
+        <h1>TD2 Géolocalisation</h1>
+
+        <h3> Exercice 1 & 2 & 3 : </h3>
+
+        <div id="map"></div>
+
+        <script type="text/javascript" src="https://stamen-maps.a.ssl.fastly.net/js/tile.stamen.js?v1.3.0"></script>
+
+        <script>
+            
+            navigator.geolocation.getCurrentPosition(showPositionCurrent);
+    
+            var map = L.map('map').setView([0, 0], 0);
+            L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                minZoom: 1,
+                maxZoom: 20,
+                ext: 'png'
+                }).addTo(map);
+            
+            var latmarseille = 43.28418760599563;
+            var longmarseille = 5.3708085461105375;
+            var latnice = 43.70184427711055;
+            var longnice = 7.267804998512;
+            
+            var calculDistanceMarseilleNice = 6371*Math.acos(Math.sin(latmarseille*(Math.PI/180))*Math.sin(latnice*(Math.PI/180))+Math.cos(latmarseille*(Math.PI/180))*Math.cos(latnice*(Math.PI/180))*Math.cos((longnice-longmarseille)*(Math.PI/180)));
+    
+            
+            var markercarros = L.marker([43.792596605930434, 7.187898645370745]).addTo(map);
+            markercarros.bindPopup("<b>La distance Nice Marseille est de "+ calculDistanceMarseilleNice + " km </b>").openPopup();
+    
+            var circle = L        
+    
+            var polygon = L.polygon([
+                [18.466089250248615, -66.08004633163162],
+                [26.702303129375387, -80.05321001804164],
+                [32.31162535168669, -64.86875361089508]
+                ]).addTo(map);
+    
+            polygon.setStyle({fillColor: '#FF0000', color: "#FF0000"});
+    
+            var coordsmarseille = [43.28418760599563, 5.3708085461105375];
+            var coordsnice = [43.70184427711055, 7.267804998512];
+            
+            var calculDistanceMarseilleNice = 6371*Math.acos(Math.sin(43.2841876059956*(Math.PI/180))*Math.sin(43.70184427711055*(Math.PI/180))+Math.cos(43.2841876059956*(Math.PI/180))*Math.cos(43.70184427711055*(Math.PI/180))*Math.cos((5.3708085461105375-7.267804998512)*(Math.PI/180)));
+    
+            function showPositionCurrent(position)
+            {
+                map.setView([position.coords.latitude,position.coords.longitude], 10);
+                L.marker([position.coords.latitude,position.coords.longitude]).addTo(map);
+                L.marker([43.70184427711055, 7.267804998512]).addTo(map);
+                circle.circle([position.coords.latitude,position.coords.longitude], {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5,
+                    radius: position.coords.accuracy
+                    }).addTo(map);
+            }
+            
+        </script>
+
+        <script>
+            var reader = new FileReader();
+            var geojsonFeature = reader.readAsText("routes-metropolitaines.geojson")
+            L.geoJSON(geojsonFeature).addTo(map);
+        </script>
+
 
     </body>
 
