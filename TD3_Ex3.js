@@ -23,7 +23,7 @@ material.map = texture
 
 const loader = new GLTFLoader();
 
-loader.load( 'potted_plant_01_4k.gtlf', function ( gltf ) {
+/*loader.load( 'potted_plant_01_4k.gtlf', function ( gltf ) {
 
 	scene.add( gltf.scene );
 
@@ -31,7 +31,7 @@ loader.load( 'potted_plant_01_4k.gtlf', function ( gltf ) {
 
 	console.error( error );
 
-} );
+} );*/
 
 camera.position.z = 5;
 
